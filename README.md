@@ -2,6 +2,14 @@
 
 An extension for CsQuery to format a request body from a form element.
 
+This extension simply adds the following extension methods to `IHTMLFormElement`.
+
+`IEnumerable<NameValueType> GetNameValueTypes(this IHTMLFormElement form, IDomElement submitter)`
+- This allows you to get the data set with a specific [submitter](http://www.w3.org/html/wg/drafts/html/master/forms.html#form-submission-algorithm) node (e.g. the button pressed).
+
+`IEnumerable<NameValueType> GetNameValueTypes(this IHTMLFormElement form, bool implicitSubmission)`
+- This allows you to get the data set using [implicit submission](http://www.w3.org/html/wg/drafts/html/master/forms.html#implicit-submission) if you pass `true` or no submitter at all if you pass `false`.
+
 ## Example ##
 
 Here's a bit of code that downloads Reddit's front page (`CQ.CreateFromUrl`) and interprets the DOM to get the names and values that would be POSTed on log in.
@@ -41,7 +49,7 @@ I'm currently waiting for my pull request to [CsQuery](https://github.com/jamiet
 be merged into the mainline. In the meantime, there is a dependency on 
 [my fork](https://github.com/joelverhagen/CsQuery). This is accomplished with a submodule.
 
-Eventually, I would like my dependency on CsQuery to be via NuGet.
+Eventually, I would like my dependency on CsQuery to be via NuGet or even merge these extensions into CsQuery.
 
 ## Missing Features ##
 
