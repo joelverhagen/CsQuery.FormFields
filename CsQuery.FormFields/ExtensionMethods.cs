@@ -1,39 +1,44 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 
 namespace CsQuery.FormFields
 {
+    /// <summary>
+    /// Extension methods that provide addition extension methods on <see cref="IHTMLFormElement" />.
+    /// </summary>
     public static class ExtensionMethods
     {
-        public static IEnumerable<NameValueType> GetNameValueTypes(this IHTMLFormElement form, IDomElement submitterNode)
+        /// <summary>
+        /// Returns sequence of form field data given a specific submitter element.
+        /// </summary>
+        /// <param name="form">The form element.</param>
+        /// <param name="submitter">The submitter element.</param>
+        /// <returns>The sequence of form field data.</returns>
+        public static IEnumerable<NameValueType> GetNameValueTypes(this IHTMLFormElement form, IDomElement submitter)
         {
-            return GetNameValueTypes(form, submitterNode, false);
+            return GetNameValueTypes(form, submitter, false);
         }
 
+        /// <summary>
+        /// Returns sequence of form field data using optional implicit submission.
+        /// </summary>
+        /// <param name="form">The form element.</param>
+        /// <param name="implicitSubmission">Whether or not to use implicit submisssion.</param>
+        /// <returns>The sequence of form field data.</returns>
         public static IEnumerable<NameValueType> GetNameValueTypes(this IHTMLFormElement form, bool implicitSubmission)
         {
             return GetNameValueTypes(form, null, implicitSubmission);
         }
 
-        private static IEnumerable<NameValueType> GetNameValueTypes(IHTMLFormElement form, IDomElement submitterNode, bool implicitSubmission)
+        /// <summary>
+        /// Returns sequence of form field data.
+        /// </summary>
+        /// <param name="form">The form element.</param>
+        /// <param name="submitter">The submitter element.</param>
+        /// <param name="implicitSubmission">Whether or not to use implicit submisssion.</param>
+        /// <returns>The sequence of form field data.</returns>
+        private static IEnumerable<NameValueType> GetNameValueTypes(IHTMLFormElement form, IDomElement submitter, bool implicitSubmission)
         {
-            return new FormFieldsParser().GetNameValueTypes(form, submitterNode, implicitSubmission);
-        }
-
-        public static HttpContent GetHttpContent(this IHTMLFormElement form, IDomElement submitterNode)
-        {
-            return GetHttpContent(form, submitterNode, false);
-        }
-
-        public static HttpContent GetHttpContent(this IHTMLFormElement form, bool implicitSubmission)
-        {
-            return GetHttpContent(form, null, implicitSubmission);
-        }
-
-        private static HttpContent GetHttpContent(IHTMLFormElement form, IDomElement submitterNode, bool implicitSubmission)
-        {
-            return new FormUrlEncodedContent(GetNameValueTypes(form, submitterNode, implicitSubmission).Select(t => new KeyValuePair<string, string>(t.Name, t.Value)));
+            return FormFieldsParser.GetNameValueTypes(form, submitter, implicitSubmission);
         }
     }
 }

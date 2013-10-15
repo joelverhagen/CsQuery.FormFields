@@ -7,26 +7,54 @@ using CsQuery.ExtensionMethods.Internal;
 
 namespace CsQuery.FormFields
 {
-    internal class FormFieldsParser
+    /// <summary>
+    /// The internal implementation of HTML5 form data algorithm
+    /// </summary>
+    /// <url>
+    /// http://www.w3.org/html/wg/drafts/html/master/forms.html#constructing-form-data-set
+    /// </url>
+    internal static class FormFieldsParser
     {
-        public IEnumerable<NameValueType> GetNameValueTypes(IHTMLFormElement form, IDomElement submitterNode, bool implicitSubmission)
+        /// <summary>
+        /// Returns the form data of the provided form.
+        /// </summary>
+        /// <param name="form">The form.</param>
+        /// <param name="submitter">The validated submitter element.</param>
+        /// <param name="implicitSubmission">
+        /// Whether or not to use implicit submission. Implicit submission takes precedence over
+        /// the provided submitter.
+        /// </param>
+        /// <returns>A lazy list of form field data.</returns>
+        public static IEnumerable<NameValueType> GetNameValueTypes(IHTMLFormElement form, IDomElement submitter, bool implicitSubmission)
         {
-            if (submitterNode != null && !IsSubmitter(submitterNode, form))
+            // ensure the submitter node is valid
+            if (submitter != null && !IsValidSubmitter(form, submitter))
             {
                 throw new ArgumentException("The provided submitter node is not a button or does not belong to the provided form.");
             }
 
-            if (implicitSubmission && submitterNode == null)
+            // find the first valid submitter if we are doing implicit submission
+            if (implicitSubmission)
             {
-                submitterNode = GetFirstValidSubmitterNode(form);
+                submitter = form
+                    .Document
+                    .GetDescendentElements()
+                    .FirstOrDefault(e => IsValidSubmitter(form, e));
             }
 
-            return GetKeyValuePairs(form, submitterNode).ToArray();
+            return GetNameValueTypes(form, submitter).ToArray();
         }
 
-        private IEnumerable<NameValueType> GetKeyValuePairs(IHTMLFormElement form, IDomElement submitter)
+        /// <summary>
+        /// Returns the form data of the provided form.
+        /// </summary>
+        /// <param name="form">The form.</param>
+        /// <param name="submitter">The validated submitter element.</param>
+        /// <returns>A lazy list of form field data.</returns>
+        private static IEnumerable<NameValueType> GetNameValueTypes(IHTMLFormElement form, IDomElement submitter)
         {
-            foreach (IDomElement e in GetSubmittableElements(form, submitter))
+            // walk the form fields
+            foreach (IDomElement e in form.Document.GetDescendentElements().Where(e => !IsExcludedFromDataSet(form, e, submitter)))
             {
                 // TODO: handle dirname
                 // TODO: handle file uploads
@@ -46,7 +74,7 @@ namespace CsQuery.FormFields
                 }
                 else if (e is IHTMLSelectElement)
                 {
-                    foreach (NameValueType pair in GetOptionKeyValueTuples(e))
+                    foreach (NameValueType pair in GetOptionKeyValueTuples(e as IHTMLSelectElement))
                     {
                         yield return pair;
                     }
@@ -67,7 +95,13 @@ namespace CsQuery.FormFields
             }
         }
 
-        private static IEnumerable<NameValueType> GetOptionKeyValueTuples(IDomElement select)
+        /// <summary>
+        /// Returns the <see cref="NameValueType" /> instances corresponding to the selected option elements that are contained in
+        /// the provided select element.
+        /// </summary>
+        /// <param name="select">The select element to inspect.</param>
+        /// <returns>A sequence of <see cref="NameValueType" /> instances for each selected option.</returns>
+        private static IEnumerable<NameValueType> GetOptionKeyValueTuples(IHTMLSelectElement select)
         {
             IEnumerable<IDomElement> optionNodes = select
                 .ChildElements
@@ -95,34 +129,22 @@ namespace CsQuery.FormFields
             }
         }
 
-        private static IEnumerable<IDomElement> GetSubmittableElements(IHTMLFormElement form, IDomElement submitter)
+        /// <summary>
+        /// Determines whether an element is excluded from a form data set.
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="e"></param>
+        /// <param name="submitter"></param>
+        /// <returns></returns>
+        private static bool IsExcludedFromDataSet(IHTMLFormElement form, IDomElement e, IDomElement submitter)
         {
-            return form
-                .Document
-                .GetDescendentElements()
-                .OfType<IFormSubmittableElement>()
-                .Where(e => e.Form == form)
-                .OfType<IDomElement>()
-                .Where(e => !IsExcludedFromDataSet(e, submitter));
-        }
-
-        private static IDomElement GetFirstValidSubmitterNode(IHTMLFormElement form)
-        {
-            IDomElement firstSubmitter = form
-                .Document
-                .GetDescendentElements()
-                .FirstOrDefault(e => IsSubmitter(e, form));
-            if (firstSubmitter == null || firstSubmitter.Disabled)
+            var submittable = e as IFormSubmittableElement;
+            if (submittable == null || submittable.Form != form)
             {
-                return null;
+                return true;
             }
-            return firstSubmitter;
-        }
 
-        private static bool IsExcludedFromDataSet(IDomElement e, IDomElement submitter)
-        {
-            return (e == null) ||
-                   (e.GetAncestors().Any(a => a.NodeName == "DATALIST")) ||
+            return (e.GetAncestors().Any(a => a.NodeName == "DATALIST")) ||
                    (e.Disabled) ||
                    (IsButton(e) && e != submitter) ||
                    (e is IHTMLInputElement && e.Type == "checkbox" && !e.Checked) ||
@@ -136,7 +158,7 @@ namespace CsQuery.FormFields
         /// </summary>
         /// <param name="e">The node to check.</param>
         /// <returns>True if the node is some kind of button. False otherwise.</returns>
-        public static bool IsButton(IDomObject e)
+        private static bool IsButton(IDomObject e)
         {
             return (e is IHTMLButtonElement) ||
                    (e is IHTMLInputElement && (
@@ -148,12 +170,12 @@ namespace CsQuery.FormFields
         }
 
         /// <summary>
-        /// Determines whether the provided element is a valid submitter of the
+        /// Determines whether the provided element is a valid submitter of the provided form.
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="form"></param>
-        /// <returns></returns>
-        public static bool IsSubmitter(IDomElement e, IHTMLFormElement form)
+        /// <param name="form">The form to test.</param>
+        /// <param name="e">The element to test.</param>
+        /// <returns>True if the provided element is a valid submitter of the provided for. False otherwise.</returns>
+        private static bool IsValidSubmitter(IHTMLFormElement form, IDomElement e)
         {
             var formElement = e as IFormSubmittableElement;
             if (formElement != null)
@@ -169,7 +191,7 @@ namespace CsQuery.FormFields
         /// </summary>
         /// <param name="input">The string to trim and collapse.</param>
         /// <returns>A new string.</returns>
-        public static string StripAndCollapseWhitespace(string input)
+        private static string StripAndCollapseWhitespace(string input)
         {
             return Regex.Replace(input, @"[ \t\n\f\r]+", " ").Trim();
         }

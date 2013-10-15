@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CsQuery.FormFields.Test
@@ -50,6 +49,21 @@ namespace CsQuery.FormFields.Test
         {
             // ARRANGE
             CQ document = "<form><input type=submit value=foo name=a disabled><input type=submit value=bar name=b></form>";
+            IHTMLFormElement form = document["form"].OfType<IHTMLFormElement>().First();
+
+            // ACT
+            NameValueType[] nameValueTypes = form.GetNameValueTypes(true).ToArray();
+
+            // ASSERT
+            Assert.IsNotNull(nameValueTypes);
+            Assert.AreEqual(0, nameValueTypes.Length);
+        }
+
+        [TestMethod]
+        public void NoName()
+        {
+            // ARRANGE
+            CQ document = "<form><input type=submit value=foo disabled><input type=submit value=bar name=b></form>";
             IHTMLFormElement form = document["form"].OfType<IHTMLFormElement>().First();
 
             // ACT
