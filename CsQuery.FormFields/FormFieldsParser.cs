@@ -149,7 +149,7 @@ namespace CsQuery.FormFields
                    (IsButton(e) && e != submitter) ||
                    (e is IHTMLInputElement && e.Type == "checkbox" && !e.Checked) ||
                    (e is IHTMLInputElement && e.Type == "radio" && !e.Checked) ||
-                   (e is IHTMLInputElement && e.Type != "image" && e.Name.IsNullOrEmpty()) ||
+                   (e.Name.IsNullOrEmpty() && !(e is IHTMLInputElement && e.Type == "image")) ||
                    (e.NodeName == "OBJECT");
         }
 

@@ -45,7 +45,7 @@ namespace CsQuery.FormFields.Test
         }
 
         [TestMethod]
-        public void Disabled()
+        public void ExcludeDisabled()
         {
             // ARRANGE
             CQ document = "<form><input type=submit value=foo name=a disabled><input type=submit value=bar name=b></form>";
@@ -60,10 +60,26 @@ namespace CsQuery.FormFields.Test
         }
 
         [TestMethod]
-        public void NoName()
+        public void ExcludeNoNameInput()
         {
             // ARRANGE
-            CQ document = "<form><input type=submit value=foo disabled><input type=submit value=bar name=b></form>";
+            CQ document = "<form><input type=submit value=foo><input type=submit value=bar name=b></form>";
+            IHTMLFormElement form = document["form"].OfType<IHTMLFormElement>().First();
+
+            // ACT
+            NameValueType[] nameValueTypes = form.GetNameValueTypes(true).ToArray();
+
+            // ASSERT
+            Assert.IsNotNull(nameValueTypes);
+            Assert.AreEqual(0, nameValueTypes.Length);
+        }
+
+
+        [TestMethod]
+        public void ExcludeNoNameButton()
+        {
+            // ARRANGE
+            CQ document = "<form><button value=foo></button><input type=submit value=bar name=b></form>";
             IHTMLFormElement form = document["form"].OfType<IHTMLFormElement>().First();
 
             // ACT
@@ -75,7 +91,7 @@ namespace CsQuery.FormFields.Test
         }
 
         [TestMethod]
-        public void Null()
+        public void SuccessfulNull()
         {
             // ARRANGE
             CQ document = "<form></form>";

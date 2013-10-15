@@ -136,7 +136,40 @@ namespace CsQuery.FormFields.Test
         }
 
         [TestMethod]
-        public void NotSubmitter()
+        public void ExcludeDisabled()
+        {
+            // ARRANGE
+            CQ document = "<form><input name=a type=submit value=foo disabled></form>";
+            IHTMLFormElement form = document["form"].OfType<IHTMLFormElement>().First();
+            IHTMLInputElement submitter = document["input"].OfType<IHTMLInputElement>().First();
+
+            // ACT
+            NameValueType[] nameValueTypes = form.GetNameValueTypes(submitter).ToArray();
+
+            // ASSERT
+            Assert.IsNotNull(nameValueTypes);
+            Assert.AreEqual(0, nameValueTypes.Length);
+        }
+
+        [TestMethod]
+        public void ExcludeSubmitterNoName()
+        {
+            // ARRANGE
+            CQ document = "<form><input type=submit value=foo></form>";
+            IHTMLFormElement form = document["form"].OfType<IHTMLFormElement>().First();
+            IHTMLInputElement submitter = document["input"].OfType<IHTMLInputElement>().First();
+
+            // ACT
+            NameValueType[] nameValueTypes = form.GetNameValueTypes(submitter).ToArray();
+
+            // ASSERT
+            Assert.IsNotNull(nameValueTypes);
+            Assert.AreEqual(0, nameValueTypes.Length);
+        }
+
+
+        [TestMethod]
+        public void ExceptionNotSubmitter()
         {
             // ARRANGE
             CQ document = "<form><input name=a></form>";
@@ -157,7 +190,7 @@ namespace CsQuery.FormFields.Test
         }
 
         [TestMethod]
-        public void NotAssociated()
+        public void ExceptionNotAssociated()
         {
             // ARRANGE
             CQ document = "<form></form><input name=a>";
