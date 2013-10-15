@@ -6,8 +6,8 @@
     <ProjectGuid>{EEFF6225-A0FC-4068-B798-C52753E903A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CsQuery.FormContent.Test</RootNamespace>
-    <AssemblyName>CsQuery.FormContent.Test</AssemblyName>
+    <RootNamespace>CsQuery.FormFields.Test</RootNamespace>
+    <AssemblyName>CsQuery.FormFields.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

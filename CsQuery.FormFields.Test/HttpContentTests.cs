@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CsQuery.FormContent.Test
+namespace CsQuery.FormFields.Test
 {
     [TestClass]
     public class HttpContentTests

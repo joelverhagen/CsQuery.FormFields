@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CsQuery.FormContent
+namespace CsQuery.FormFields
 {
     public class NameValueType : Tuple<string, string, string>
     {

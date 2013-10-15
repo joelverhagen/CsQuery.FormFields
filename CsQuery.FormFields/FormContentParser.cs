@@ -5,7 +5,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using CsQuery.ExtensionMethods.Internal;
 
-namespace CsQuery.FormContent
+namespace CsQuery.FormFields
 {
     internal class FormContentParser
     {

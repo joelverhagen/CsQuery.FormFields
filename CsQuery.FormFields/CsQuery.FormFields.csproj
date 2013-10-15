@@ -7,8 +7,8 @@
     <ProjectGuid>{D563CC14-D211-44F3-8E9E-DEBE7C18B2D9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CsQuery.FormContent</RootNamespace>
-    <AssemblyName>CsQuery.FormContent</AssemblyName>
+    <RootNamespace>CsQuery.FormFields</RootNamespace>
+    <AssemblyName>CsQuery.FormFields</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

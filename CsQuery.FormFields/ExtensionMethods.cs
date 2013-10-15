@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 
-namespace CsQuery.FormContent
+namespace CsQuery.FormFields
 {
     public static class ExtensionMethods
     {

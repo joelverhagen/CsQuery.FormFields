@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CsQuery.FormContent.Test
+namespace CsQuery.FormFields.Test
 {
     [TestClass]
     public class ExcludedElementTests
