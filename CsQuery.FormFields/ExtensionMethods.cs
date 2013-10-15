@@ -18,7 +18,7 @@ namespace CsQuery.FormFields
 
         private static IEnumerable<NameValueType> GetNameValueTypes(IHTMLFormElement form, IDomElement submitterNode, bool implicitSubmission)
         {
-            return new FormContentParser().GetNameValueTypes(form, submitterNode, implicitSubmission);
+            return new FormFieldsParser().GetNameValueTypes(form, submitterNode, implicitSubmission);
         }
 
         public static HttpContent GetHttpContent(this IHTMLFormElement form, IDomElement submitterNode)

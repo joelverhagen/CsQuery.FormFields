@@ -7,7 +7,7 @@ using CsQuery.ExtensionMethods.Internal;
 
 namespace CsQuery.FormFields
 {
-    internal class FormContentParser
+    internal class FormFieldsParser
     {
         public IEnumerable<NameValueType> GetNameValueTypes(IHTMLFormElement form, IDomElement submitterNode, bool implicitSubmission)
         {
