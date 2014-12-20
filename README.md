@@ -45,11 +45,8 @@ passwd = bar
 
 ## Dependencies ##
 
-I'm currently waiting for my pull request to [CsQuery](https://github.com/jamietre/CsQuery)
-be merged into the mainline. In the meantime, there is a dependency on 
-[my fork](https://github.com/joelverhagen/CsQuery). This is accomplished with a submodule.
-
-Eventually, I would like my dependency on CsQuery to be via NuGet or even merge these extensions into CsQuery.
+- [CsQuery](https://github.com/jamietre/CsQuery)
+- .NET 4.0 or newer
 
 ## Missing Features ##
 
@@ -64,7 +61,6 @@ Eventually, I would like my dependency on CsQuery to be via NuGet or even merge 
 
 - Generating `HttpContent` from an `IHTMLFormElement`.
 - Generating `HttpRequestMessage` from an `IHTMLFormElement` and a URL.
-
 
 ## Testing and Verification ##
 
