@@ -233,5 +233,48 @@ namespace CsQuery.FormFields.Test
             Assert.AreEqual("foo", nameValueTypes[0].Value);
             Assert.AreEqual("search", nameValueTypes[0].Type);
         }
+
+        [TestMethod]
+        public void EqualsTyped()
+        {
+            // ARRANGE
+            var first = new NameValueType("name", "value", "type");
+            var second = new NameValueType("name", "value", "type");
+
+            // ACT
+            bool equals = first.Equals(second);
+
+            // ASSERT
+            Assert.IsTrue(equals);
+        }
+
+        [TestMethod]
+        public void EqualsObject()
+        {
+            // ARRANGE
+            var first = new NameValueType("name", "value", "type");
+            var second = new NameValueType("name", "value", "type");
+
+            // ACT
+            bool equals = first.Equals((object) second);
+
+            // ASSERT
+            Assert.IsTrue(equals);
+        }
+
+        [TestMethod]
+        public void GetHashCodeSame()
+        {
+            // ARRANGE
+            var first = new NameValueType("name", "value", "type");
+            var second = new NameValueType("name", "value", "type");
+
+            // ACT
+            int firstHashCode = first.GetHashCode();
+            int secondHashCode = second.GetHashCode();
+
+            // ASSERT
+            Assert.AreEqual(firstHashCode, secondHashCode);
+        }
     }
 }
